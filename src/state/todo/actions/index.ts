@@ -8,6 +8,12 @@ import {
   ITodo,
   ITodoUpdates
 } from '../types'
+import {
+  ITodoState
+} from '../reducers'
+import { IThunkAction, IThunkDispatch } from '../../types'
+import { IAppState } from '../..'
+import { resolveVisibleTodos } from '../resolvers'
 
 //-----------------------------------------------------------------------------
 // Exports
@@ -16,7 +22,8 @@ export type ITodoActions =
   ICreateTodo | 
   IDeleteTodo |
   ISetAllTodos | 
-  IUpdateTodo
+  ISetVisibleTodos | 
+  IUpdateTodo 
 
 //-----------------------------------------------------------------------------
 // Create Todo
@@ -32,16 +39,26 @@ interface ICreateTodo {
 export const createTodo = (
   sectionIndex: number, 
   itemIndex: number
-): ITodoActions => {
+): IThunkAction => {
+  return async (dispatch: IThunkDispatch) => {
 
-  const newTodo: ITodo = {
-    id: Math.random() + '',
-    text: null,
-    dateCreated: moment().format('YYYY_MM_DD'),
-    dateCurrent: moment().format('YYYY_MM_DD'),
-    dateCompleted: null
+    const newTodo: ITodo = {
+      id: Math.random() + '',
+      text: null,
+      dateCreated: moment().format(),
+      dateCurrent: moment().format(),
+      dateCompleted: null
+    }
+
+    dispatch(createTodoReducer(newTodo, sectionIndex, itemIndex))
   }
+}
 
+export const createTodoReducer = (
+  newTodo: ITodo,
+  sectionIndex: number, 
+  itemIndex: number
+): ITodoActions => {
   return {
     type: CREATE_TODO,
     newTodo,
@@ -61,6 +78,16 @@ interface IDeleteTodo {
 }
 
 export const deleteTodo = (
+  id: string, 
+  sectionIndex: number
+): IThunkAction => {
+  return async (dispatch: IThunkDispatch, getState: () => IAppState) => {
+    dispatch(deleteTodoReducer(id, sectionIndex))
+    dispatch(setVisibleTodos(resolveVisibleTodos(getState)))
+  }
+}
+
+export const deleteTodoReducer = (
   id: string, 
   sectionIndex: number
 ): ITodoActions => {
@@ -88,6 +115,22 @@ export const setAllTodos = (nextAllTodos: IAllTodos): ITodoActions => {
 }
 
 //-----------------------------------------------------------------------------
+// Set All Todos
+//-----------------------------------------------------------------------------
+export const SET_VISIBLE_TODOS = 'SET_VISIBLE_TODOS'
+interface ISetVisibleTodos {
+  type: typeof SET_VISIBLE_TODOS
+  nextVisibleTodos: ITodoState['visibleTodos']
+}
+
+export const setVisibleTodos = (nextVisibleTodos: ITodoState['visibleTodos']): ITodoActions => {
+	return {
+		type: SET_VISIBLE_TODOS,
+    nextVisibleTodos
+	}
+}
+
+//-----------------------------------------------------------------------------
 // Update Todo
 //-----------------------------------------------------------------------------
 export const UPDATE_TODO = 'UPDATE_TODO'
@@ -97,7 +140,18 @@ interface IUpdateTodo {
   updates: ITodoUpdates
 }
 
-export const updateTodo = (id: ITodo['id'], updates: ITodoUpdates): ITodoActions => {
+export const updateTodo = (
+  id: ITodo['id'], 
+  updates: ITodoUpdates,
+  updateVisibleTodos: boolean = false
+): IThunkAction => {
+  return async (dispatch: IThunkDispatch, getState: () => IAppState) => {
+    dispatch(updateTodoReducer(id, updates))
+    updateVisibleTodos && dispatch(setVisibleTodos(resolveVisibleTodos(getState)))
+  }
+}
+
+export const updateTodoReducer = (id: ITodo['id'], updates: ITodoUpdates): ITodoActions => {
 	return {
     type: UPDATE_TODO,
     id,

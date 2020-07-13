@@ -1,56 +1,50 @@
 //-----------------------------------------------------------------------------
 // Imports
 //-----------------------------------------------------------------------------
-import React from 'react'
+import React from 'react' 
+import moment from 'moment'
+import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components/native'
+
+import { IAppState } from '../state'
+import { ITodo } from '../state/todo/types'
+
+import { updateTodo } from '../state/todo/actions'
+
+import Datepicker from './Datepicker'
 
 //-----------------------------------------------------------------------------
 // Component
 //-----------------------------------------------------------------------------
-const ContainerExport = ({ children }: IContainerExport) => {
+const TodoMoveToDate = ({
+  todoId
+}: ITodoProps) => {
+
+  // Redux
+  const dispatch = useDispatch()
+  const todoDateCurrent = useSelector((state: IAppState) => state.todo.allTodos[todoId]?.dateCurrent)
+
   return (
-      <Container>
-        <Header>
-          <Text>All Tasks</Text>
-        </Header>
-        <Children>
-          { children }
-        </Children>
-      </Container>
-  );
+    <Container>
+      <Datepicker
+        onDateChange={(nextDate: string) => dispatch(updateTodo(todoId, { dateCurrent: moment(nextDate).format()}, true))}
+        value={todoDateCurrent}/>
+    </Container>
+  )
 }
 
 //-----------------------------------------------------------------------------
 // Props
 //-----------------------------------------------------------------------------
-interface IContainerExport {
-  children?: any
+interface ITodoProps {
+  todoId: ITodo['id']
 }
 
 //-----------------------------------------------------------------------------
 // Styled Components
 //-----------------------------------------------------------------------------
 const Container = styled.View`
-  flex: 1;
-  background-color: rgb(230, 230, 230);
+  margin: 10px 0;
 `
 
-const Header = styled.View`
-  width: 100%;
-  height: 75px;
-  padding-left: 15px;
-  justify-content: flex-end;
-  align-items: flex-start;
-`
-
-const Text = styled.Text`
-  color: black;
-  font-size: 28px;
-  font-weight: bold;
-`
-
-const Children = styled.View`
-  flex: 1;
-`
-
-export default ContainerExport
+export default TodoMoveToDate

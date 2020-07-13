@@ -4,6 +4,8 @@ export type IRootStack = {
   Main: undefined
   Todo: {
     id: ITodo['id']
+    sectionIndex: number
+    itemIndex: number
   }
 }
 

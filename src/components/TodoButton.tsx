@@ -7,50 +7,58 @@ import styled from 'styled-components/native'
 //-----------------------------------------------------------------------------
 // Component
 //-----------------------------------------------------------------------------
-const ContainerExport = ({ children }: IContainerExport) => {
+const TodoButton = ({
+  icon,
+  iconText,
+  onPress
+}: ITodoProps) => {
+
   return (
-      <Container>
-        <Header>
-          <Text>All Tasks</Text>
-        </Header>
-        <Children>
-          { children }
-        </Children>
-      </Container>
-  );
+    <Touchable
+      onPress={onPress}>
+      <View>
+        <IconContainer>
+          {icon}
+        </IconContainer>
+        <Text>
+          {iconText}
+        </Text>
+      </View>
+    </Touchable>
+  )
 }
 
 //-----------------------------------------------------------------------------
 // Props
 //-----------------------------------------------------------------------------
-interface IContainerExport {
-  children?: any
+interface ITodoProps {
+  icon: any // React Component
+  iconText: string
+  onPress(...args: any): void
 }
 
 //-----------------------------------------------------------------------------
 // Styled Components
 //-----------------------------------------------------------------------------
-const Container = styled.View`
-  flex: 1;
-  background-color: rgb(230, 230, 230);
+const Touchable = styled.TouchableWithoutFeedback`
 `
 
-const Header = styled.View`
-  width: 100%;
-  height: 75px;
-  padding-left: 15px;
-  justify-content: flex-end;
-  align-items: flex-start;
+const View = styled.View`
+  margin: 0 5px;
+  padding: 10px;
+  align-items: center;
+  border-radius: 20px;
+  border: 1px solid rgb(150, 150, 150);
+  background-color: white;
 `
-
 const Text = styled.Text`
-  color: black;
-  font-size: 28px;
-  font-weight: bold;
+  font-size: 18px;
+  color: rgb(100, 100, 100);
 `
 
-const Children = styled.View`
-  flex: 1;
+const IconContainer = styled.View`
+  justify-content: center;
+  align-items: center;
 `
 
-export default ContainerExport
+export default TodoButton

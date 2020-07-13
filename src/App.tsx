@@ -19,9 +19,9 @@ import {
 } from './types/navigation'
 import { appReducer, IAppState } from './state'
 
-import Lists from './screens/ListsScreen'
-import Todos from './screens/TodosScreen'
-import Todo from './screens/TodoScreen'
+import Lists from './screens/Lists'
+import Todos from './screens/Todos'
+import Todo from './screens/Todo'
 
 //-----------------------------------------------------------------------------
 // Component
@@ -49,7 +49,7 @@ const App = () => {
                 backgroundColor: 'transparent'
               },
               gestureResponseDistance: {
-                vertical: 200
+                vertical: 600
               }
             }}>
             <RootScreen

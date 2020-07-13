@@ -11,4 +11,5 @@ export interface ITodo {
 export interface ITodoUpdates {
   text?: ITodo['text']
   dateCompleted?: ITodo['dateCompleted']
+  dateCurrent?: ITodo['dateCurrent']
 }

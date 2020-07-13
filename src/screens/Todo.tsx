@@ -2,40 +2,60 @@
 // Imports
 //-----------------------------------------------------------------------------
 import React from 'react'
-import { useSelector } from 'react-redux'
 import styled from 'styled-components/native'
 
-import { IAppState } from '../state'
+import { ITodo } from '../state/todo/types'
+
+import TodoMoveToDate from '../components/TodoMoveToDate'
+import TodoText from './TodoText'
+import TodoDates from '../components/TodoDates'
 
 //-----------------------------------------------------------------------------
 // Component
 //-----------------------------------------------------------------------------
-const Todo = ({ route }: ITodo) => {
-
-  const todo = useSelector((state: IAppState) => state.todo.allTodos[route.params?.id])
+const TodoScreen = ({ 
+  route: {
+    params: {
+      id
+}}}: ITodoProps) => {
 
   return (
-      <Container>
+      <Container
+      keyboardVerticalOffset={500}>
         <Header>
           <SwipeIndicator />
         </Header>
         <TodoContainer>
-          <Text>{todo.text}</Text>
+          <TodoText
+            todoId={id}/>
+          <TodoMoveToDate
+            todoId={id}/>
+          <TodoDates
+            todoId={id}/>
         </TodoContainer>
       </Container>
-  );
+  )
 }
 
-interface ITodo {
-  route: any
+//-----------------------------------------------------------------------------
+// Props
+//-----------------------------------------------------------------------------
+interface ITodoProps {
+  route: {
+    params: {
+      id: ITodo['id']
+      sectionIndex: number
+      itemIndex: number
+    }
+  }
 }
 
 //-----------------------------------------------------------------------------
 // Styled Components
 //-----------------------------------------------------------------------------
-const Container = styled.View`
-  height: 85%;
-  top: 15%;
+const Container = styled.KeyboardAvoidingView`
+  height: 75%;
+  top: 25%;
   padding: 0 20px;
   background-color: rgb(230, 230, 230);
   border-top-left-radius: 10px;
@@ -45,7 +65,8 @@ const Container = styled.View`
 
 const Header = styled.View`
   width: 100%;
-  padding: 15px 0;
+  padding: 10px 0;
+  margin-bottom: 5px;
   justify-content: center;
   align-items: center;
 `
@@ -62,9 +83,4 @@ const TodoContainer = styled.View`
   padding-top: 10px;
 `
 
-const Text = styled.Text`
-  font-family: OpenSans_700Bold;
-  font-size: 22px;
-`
-
-export default Todo
+export default TodoScreen
